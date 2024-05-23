@@ -1,7 +1,7 @@
 import '../css/New.css'
 
 import { useNavigate } from 'react-router-dom';
-import sword from '../assets/sword.png'
+import { getImage } from "../util/get-image";
 
 const New = () => {
 
@@ -18,7 +18,7 @@ const New = () => {
       <h2>검의 이름을 입력해주세요</h2>
 
       <div className='sword'>
-        <img src={sword} alt="sword" />
+        <img src={getImage('sword')} alt="sword" />
       </div>
 
       <input

@@ -1,15 +1,11 @@
 import '../css/Enhance.css'
 import '../css/Modal.css'
 
+import { getImage } from "../util/get-image";
+
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import Modal from 'react-modal'
-
-import instruction from '.././assets/instruction.png';
-import card from '.././assets/card.png';
-import trophy from '.././assets/trophy.png';
-import sword from '.././assets/sword.png';
-import x from '.././assets/x.png';
 
 Modal.setAppElement('#root');
 
@@ -43,7 +39,7 @@ const Enhance = () => {
         className='menu-item'
         onClick={oepnModal}
         >
-        <img src={instruction} alt="instruction" />
+        <img src={getImage('instruction')} alt="instruction" />
         강화하러 가기
         </div>
       </div>
@@ -54,7 +50,7 @@ const Enhance = () => {
           onRequestClose={closeModal}
           contentLabel='instruction'
         >
-          <img onClick={closeModal} src={x} alt="x" />
+          <img onClick={closeModal} src={getImage('x')} alt="x" />
           
           <p>
             확률 증가권(사용시 확률 10% 증가)은 계정당 3개 주어집니다.<br/>
@@ -79,7 +75,7 @@ const Enhance = () => {
         <div
         className='menu-item'
         >
-        <img src={card} alt="card" />
+        <img src={getImage('card')} alt="card" />
         확률 증가권 : {probCoupon}개 남음
         </div>
       </div>
@@ -89,7 +85,7 @@ const Enhance = () => {
         className='menu-item'
         onClick={onClickRanking}
         >
-        <img src={trophy} alt="card" />
+        <img src={getImage('trophy')} alt="trophy" />
         명예의 전당 가기
         </div>
       </div>
@@ -101,7 +97,7 @@ const Enhance = () => {
       </h2>
 
       <div className='sword'>
-        <img src={sword} alt="sword" />
+        <img src={getImage('sword')} alt="sword" />
       </div>
 
       <button>강화하기</button>

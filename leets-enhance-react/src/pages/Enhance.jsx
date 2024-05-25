@@ -6,29 +6,57 @@ import { getImage } from "../util/get-image";
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import Modal from 'react-modal'
+import { get } from 'firebase/database';
 
 Modal.setAppElement('#root');
 
 const Enhance = () => {
 
   const nav = useNavigate();
-  const [modalIsOpen, setModalIsOpen] = useState(false);
 
-  let probCoupon = 3;
+  let [coupon, setCoupon] = useState(3);
+  const [instructModalIsOpen, setInstructModalIsOpen] = useState(false);
+  const [enhanceModalIsOpen, setEnhanceModalIsOpen] = useState(false);
+  const [couponModalISOpen, setCouponModalIsOpen] = useState(false);
+  const [resultModalIsOpen, setResultModalIsOpen] = useState(false);
+
   const swordName = '박보검';
   let level = 10;
-
 
   const onClickRanking = () =>{
     nav("/");
   }
   
-  const oepnModal = () => {
-    setModalIsOpen(true);
+  const openInstructModal = () => {
+    setInstructModalIsOpen(true);
   }
 
-  const closeModal = () => {
-    setModalIsOpen(false);
+  const closeInstructModal = () => {
+    setInstructModalIsOpen(false);
+  }
+
+  const openEnhanceModal = () => {
+    setEnhanceModalIsOpen(true);
+  }
+
+  const closeEnhanceModal = () => {
+    setEnhanceModalIsOpen(false);
+  }
+
+  const openCouponMdal = () => {
+    setCouponModalIsOpen(true);
+  }
+
+  const closeCouponModal = () => {
+    setCouponModalIsOpen(false);
+  }
+
+  const openResultMdal = () => {
+    setResultModalIsOpen(true);
+  }
+
+  const closeResultModal = () => {
+    setResultModalIsOpen(false);
   }
 
   return (
@@ -37,46 +65,19 @@ const Enhance = () => {
       <div className='menu-enhance'>
         <div
         className='menu-item'
-        onClick={oepnModal}
+        onClick={openInstructModal}
         >
         <img src={getImage('instruction')} alt="instruction" />
         강화하러 가기
         </div>
       </div>
-      
-      <Modal
-          className='modal-content'
-          isOpen={modalIsOpen}
-          onRequestClose={closeModal}
-          contentLabel='instruction'
-        >
-          <img onClick={closeModal} src={getImage('x')} alt="x" />
-          
-          <p>
-            확률 증가권(사용시 확률 10% 증가)은 계정당 3개 주어집니다.<br/>
-            강화 단계에 따른 강화 확률이 보여집니다.<br/>
-            <br/>
-            💪🏻강화 확률<br/>
-            90% → 80% → 70% → 50% → 30% → 10% → 3%<br/>
-            7번 성공 이후에는 3%로 고정됩니다<br/>
-            <br/>
-            🔥파괴 확률<br/>
-            3강 이전 5%<br/>
-            4강 이후부터 5%씩 증가,<br/>
-            예) 4강 10%, 15%....<br/>
-            최대 50%까지 증가합니다<br/>
-            <br/>
-            파괴되지 않을 경우 한 단계 하강<br/>
-            파괴될 경우 Lv.0으로 하강
-          </p>
-        </Modal>
 
       <div className='menu-prob'>
         <div
         className='menu-item'
         >
         <img src={getImage('card')} alt="card" />
-        확률 증가권 : {probCoupon}개 남음
+        확률 증가권 : {coupon}개 남음
         </div>
       </div>
 
@@ -100,8 +101,104 @@ const Enhance = () => {
         <img src={getImage('sword')} alt="sword" />
       </div>
 
-      <button>강화하기</button>
+      <button
+        onClick={openEnhanceModal}
+        >
+        강화하기
+      </button>
 
+      {/* 모달 */}
+      <Modal //설명서
+        className='modal-instruct'
+        isOpen={instructModalIsOpen}
+        onRequestClose={closeInstructModal}
+        contentLabel='instruction'
+      >
+        <img className='x' onClick={closeInstructModal} src={getImage('x')} alt="x" />
+        
+        <p>
+          확률 증가권(사용시 확률 10% 증가)은 계정당 3개 주어집니다.<br/>
+          강화 단계에 따른 강화 확률이 보여집니다.<br/>
+          <br/>
+          💪🏻강화 확률<br/>
+          90% → 80% → 70% → 50% → 30% → 10% → 3%<br/>
+          7번 성공 이후에는 3%로 고정됩니다<br/>
+            <br/>
+          🔥파괴 확률<br/>
+          3강 이전 5%<br/>
+          4강 이후부터 5%씩 증가,<br/>
+          예) 4강 10%, 15%....<br/>
+          최대 50%까지 증가합니다<br/>
+          <br/>
+          파괴되지 않을 경우 한 단계 하강<br/>
+          파괴될 경우 Lv.0으로 하강
+        </p>
+      </Modal>
+
+      <Modal //강화하시겠습니까?
+        className='modal-enhance'
+        isOpen={enhanceModalIsOpen}
+        onRequestClose={closeEnhanceModal}
+        contentLabel='enhance'
+      >
+        <h3>정말 강화하시겠습니까?</h3>
+        <div className='button'>
+          <button
+            onClick={() => {
+              closeEnhanceModal();
+              openCouponMdal();
+            }}
+          >예</button> |
+          <button
+            onClick={closeEnhanceModal}
+          >아니오</button>
+        </div>
+      </Modal>
+
+      <Modal //확률증가권을 사용하시겠습니까?
+        className='modal-enhance'
+        isOpen={couponModalISOpen}
+        onRequestClose={closeCouponModal}
+        contentLabel='coupon'
+      >
+        <h3>확률 증가권을 사용하시겠습니까?</h3>
+        사용시 자동으로 즉시 강화하기가 실행 됩니다<br/>
+        사용시 강화 성공 확률은 13%입니다
+        <div className='button'>
+          <button
+            onClick={()=>{
+              closeCouponModal();
+              openResultMdal();
+              setCoupon(coupon--);
+              if(coupon===0){
+                // 쿠폰이 없어용!
+              }
+              console.log(coupon);
+            }}
+          >예</button> |
+          <button
+            onClick={()=>{
+              closeCouponModal();
+              openResultMdal();
+            }}
+          >아니오</button>
+        </div>
+      </Modal>
+
+      <Modal //강화 결과
+        className='modal-enhance'
+        isOpen={resultModalIsOpen}
+        onRequestClose={closeResultModal}
+        contentLabel='result'
+      >
+        <img className='x' onClick={closeInstructModal} src={getImage('x')} alt="x" />
+        <h3>강화 실패!</h3>
+        <img className='result' src={getImage('tears')} alt="fail" />
+        <h3>강화 성공!</h3>
+        <img className='result' src={getImage('diamond')} alt="success" />
+        <h3>파괴되었습니다.</h3>
+        <img className='result' src={getImage('fire_blue')} alt="destruct" />
+      </Modal>
     </div>
   )
 }

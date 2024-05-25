@@ -34,7 +34,7 @@ const Ranking = () => {
             className='enhance'
             onClick={onClickEnhance}
             >
-            <img src={getImage('fire')} alt="enhance" />
+            <img src={getImage('fire_red')} alt="enhance" />
             강화하러 가기
           </div>
         </header>

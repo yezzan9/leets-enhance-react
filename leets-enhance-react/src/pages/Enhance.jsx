@@ -4,7 +4,7 @@ import '../css/Modal.css'
 import { getImage } from "../util/get-image";
 
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import React from 'react';
 import Modal from 'react-modal'
 
@@ -19,15 +19,15 @@ const Enhance = () => {
   let [probSuccess, setProbSuccess] = useState(90);
   let [probDestruction, setProbDestruction] = useState(5);
   let [probFail, setProbFail] = useState(100-probSuccess-probDestruction);
+  let [countTry, setCountTry] = useState(1);
 
-
+  const [result, setResult] = useState("");
   const [instructModalIsOpen, setInstructModalIsOpen] = useState(false);
   const [enhanceModalIsOpen, setEnhanceModalIsOpen] = useState(false);
   const [couponModalISOpen, setCouponModalIsOpen] = useState(false);
   const [resultModalIsOpen, setResultModalIsOpen] = useState(false);
 
   const swordName = '박보검';
-  let countTry = 1;
 
   const onClickRanking = () =>{
     nav("/");
@@ -65,7 +65,8 @@ const Enhance = () => {
       <img className='result' src={getImage('diamond')} alt="success" />
     </div>,
     chance: probSuccess,
-    action: (setLevel, setProbSuccess, countTry) => {
+    action: (setLevel, setProbSuccess, countTry, setCountTry) => {
+      //이 부분이 총체적 난국.......
       if(countTry < 7) {
         switch(countTry){
           case 1: setProbSuccess(80); break;
@@ -77,10 +78,15 @@ const Enhance = () => {
           default: setProbSuccess(3);
         }
       }
+      if(countTry >= 4 && probDestruction < 50) {
+        setProbDestruction(prev => prev+5);
+      }
+      setProbFail(100-probSuccess-probDestruction);
+      setCountTry(prev => prev+1);
       setLevel(prev => prev+1);
-      // countTry++;
-      console.log(`level:${level} countTry:${countTry} probSuccess=${probSuccess}`);
+      console.log(`[성공] level:${level} countTry:${countTry} probSuccess:${probSuccess} probDestruct:${probDestruction} probFail:${probFail}`);
     }},
+    //----------------------------------------
     { component :
     <div>
       <h3>파괴되었습니다.</h3>
@@ -88,8 +94,13 @@ const Enhance = () => {
     </div>,
     chance: probDestruction,
     action: ()=>{
-      
+      setLevel(0);
+      if(countTry >= 4 && probDestruction < 50) {
+        setProbDestruction(prev => prev+5);
+      }
+      console.log(`[파괴] level:${level} countTry:${countTry} probSuccess:${probSuccess} probDestruct:${probDestruction} probFail:${probFail}`);
     }},
+    //----------------------------------------
     { component :
     <div>
       <h3>강화 실패!</h3>
@@ -97,22 +108,33 @@ const Enhance = () => {
     </div>,
     chance: probFail,
     action: () => {
-      
+      setLevel(prev => prev-1);
+      if(countTry >= 4 && probDestruction < 50) {
+        setProbDestruction(prev => prev+5);
+      }
+      console.log(`[실패] level:${level} countTry:${countTry} probSuccess:${probSuccess} probDestruct:${probDestruction} probFail:${probFail}`);
     }},
   ];
 
-  const getProbability = (setLevel, setProbSuccess, countTry) => {
+  const getProbability = (setLevel, setProbSuccess, countTry, setCountTry) => {
     const random = Math.random() * 100;
     let sum = 0;
 
     for (const { component, chance, action } of probabilities) {
       sum += chance;
       if(random < sum) {
-        action(setLevel, setProbSuccess, countTry);
+        action(setLevel, setProbSuccess, countTry, setCountTry);
         return component;
       }
     }
   }
+
+  useEffect(()=>{
+    if(resultModalIsOpen){
+      const component = getProbability(setLevel, setProbSuccess, countTry, setCountTry);
+      setResult(component);
+    }
+  }, [resultModalIsOpen]);
 
   return (
     <div className='Enhance'>
@@ -224,11 +246,7 @@ const Enhance = () => {
             onClick={()=>{
               closeCouponModal();
               openResultMdal();
-              setCoupon(coupon--);
-              if(coupon===0){
-                // 쿠폰이 없어용!
-              }
-              console.log(coupon);
+              setCoupon(prev => prev-1);
             }}
           >예</button> |
           <button
@@ -247,7 +265,8 @@ const Enhance = () => {
         contentLabel='result'
       >
         <img className='x' onClick={closeResultModal} src={getImage('x')} alt="x" />
-        {getProbability(setLevel, setProbSuccess)}
+          {result}
+          {/* {getProbability(setLevel, setProbDestruction, countTry, setCountTry)} */}
       </Modal>
     </div>
   )

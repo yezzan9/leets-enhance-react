@@ -1,7 +1,8 @@
 .Ranking {
+  position: relative;
   margin: 0 auto;
   text-align: center;
-  width: 500px;
+  width: 900px;
 }
 
 .Ranking .login {
@@ -9,8 +10,6 @@
   top: 0;
   left: 0;
   cursor: pointer;
-  margin-top: 20px;
-  margin-left: 20px;
 }
 
 .Ranking .enhance {
@@ -18,8 +17,6 @@
   top: 0;
   right: 0;
   cursor: pointer;
-  margin-top: 20px;
-  margin-right: 20px;
 }
 
 .topRank {
@@ -35,11 +32,13 @@
 .topRank1 {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .topRank2, .topRank3 {
   display: flex;
   flex-direction: column;
+  align-items: center;
   margin-top: 50px;
   margin-bottom: 50px;
 }
@@ -72,7 +71,7 @@
 .other .other-rank {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: center;
 }
 
 .Ranking .other img{
@@ -83,4 +82,6 @@
 
 .line {
   border-top: 10px solid navy;
+  width: 120px;
+  margin-top: 5px;
 }

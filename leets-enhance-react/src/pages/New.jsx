@@ -22,7 +22,8 @@ const New = () => {
       </div>
 
       <input
-      placeholder='ex) 박보검'
+      maxLength={5}
+      placeholder='ex) 박보검 (5자 이내)'
       >
       </input>
 

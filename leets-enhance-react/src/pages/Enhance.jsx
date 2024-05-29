@@ -145,7 +145,7 @@ const Enhance = () => {
         onClick={openInstructModal}
         >
         <img src={getImage('instruction')} alt="instruction" />
-        강화하러 가기
+        설명서
         </div>
       </div>
 
@@ -266,7 +266,6 @@ const Enhance = () => {
       >
         <img className='x' onClick={closeResultModal} src={getImage('x')} alt="x" />
           {result}
-          {/* {getProbability(setLevel, setProbDestruction, countTry, setCountTry)} */}
       </Modal>
     </div>
   )

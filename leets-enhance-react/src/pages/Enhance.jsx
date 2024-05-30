@@ -20,6 +20,7 @@ const Enhance = () => {
   let [probDestruction, setProbDestruction] = useState(5);
   let [probFail, setProbFail] = useState(100-probSuccess-probDestruction);
   let [countTry, setCountTry] = useState(1);
+  let [countSuccess, setCountSuccess] = useState(1);
 
   const [result, setResult] = useState("");
   const [instructModalIsOpen, setInstructModalIsOpen] = useState(false);
@@ -73,9 +74,9 @@ const Enhance = () => {
       <img className='result' src={getImage('diamond')} alt="success" />
     </div>,
     chance: probSuccess,
-    action: (setLevel, setProbSuccess, countTry, setCountTry) => {
-      if(countTry < 7) {
-        switch(countTry){
+    action: () => {
+      if(countSuccess < 7) {
+        switch(countSuccess){
           case 1: setProbSuccess(80); break;
           case 2: setProbSuccess(70); break;
           case 3: setProbSuccess(50); break;
@@ -85,6 +86,7 @@ const Enhance = () => {
           default: setProbSuccess(3);
         }
       }
+      setCountSuccess(prev => prev+1);
       setCountTry(prev => prev+1);
       setLevel(prev => prev+1);
     }},

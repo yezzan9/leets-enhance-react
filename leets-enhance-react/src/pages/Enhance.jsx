@@ -25,6 +25,7 @@ const Enhance = () => {
   const [instructModalIsOpen, setInstructModalIsOpen] = useState(false);
   const [enhanceModalIsOpen, setEnhanceModalIsOpen] = useState(false);
   const [couponModalISOpen, setCouponModalIsOpen] = useState(false);
+  const [noCouponModalIsOpen, setNoCouponModalIsOpen] = useState(false);
   const [resultModalIsOpen, setResultModalIsOpen] = useState(false);
 
   const swordName = '박보검';
@@ -45,17 +46,24 @@ const Enhance = () => {
   const closeEnhanceModal = () => {
     setEnhanceModalIsOpen(false);
   }
-  const openCouponMdal = () => {
+  const openCouponModal = () => {
     setCouponModalIsOpen(true);
   }
   const closeCouponModal = () => {
     setCouponModalIsOpen(false);
   }
-  const openResultMdal = () => {
+  const openResultModal = () => {
     setResultModalIsOpen(true);
   }
   const closeResultModal = () => {
     setResultModalIsOpen(false);
+  }
+
+  const openNoCouponModal = () => {
+    setNoCouponModalIsOpen(true);
+  }
+  const closeNoCouponModal = () => {
+    setNoCouponModalIsOpen(false);
   }
 
   const probabilities = [
@@ -100,7 +108,9 @@ const Enhance = () => {
     chance: probFail,
     action: () => {
       setCountTry(prev => prev+1);
-      setLevel(prev => prev-1);
+      if(level > 0){
+        setLevel(prev => prev-1);
+      }
     }},
   ];
 
@@ -225,7 +235,7 @@ const Enhance = () => {
           <button
             onClick={() => {
               closeEnhanceModal();
-              openCouponMdal();
+              openCouponModal();
             }}
           >예</button> |
           <button
@@ -247,17 +257,32 @@ const Enhance = () => {
           <button
             onClick={()=>{
               closeCouponModal();
-              openResultMdal();
-              setCoupon(prev => prev-1);
+              if(coupon > 0){
+                setCoupon(prev => prev-1);
+                openResultModal();
+              }
+              else {
+                openNoCouponModal();
+              }
             }}
           >예</button> |
           <button
             onClick={()=>{
               closeCouponModal();
-              openResultMdal();
+              openResultModal();
             }}
           >아니오</button>
         </div>
+      </Modal>
+
+      <Modal
+        className='modal-enhance'
+        isOpen={noCouponModalIsOpen}
+        onRequestClose={closeNoCouponModal}
+        contentLabel='noCoupon'
+      >
+        <h3>사용할 수 있는 확률 증가권이 없습니다.</h3>
+        <button onClick={closeNoCouponModal}>확인</button>
       </Modal>
 
       <Modal //강화 결과

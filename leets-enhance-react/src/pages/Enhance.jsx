@@ -66,7 +66,6 @@ const Enhance = () => {
     </div>,
     chance: probSuccess,
     action: (setLevel, setProbSuccess, countTry, setCountTry) => {
-      //이 부분이 총체적 난국.......
       if(countTry < 7) {
         switch(countTry){
           case 1: setProbSuccess(80); break;
@@ -78,13 +77,8 @@ const Enhance = () => {
           default: setProbSuccess(3);
         }
       }
-      if(countTry >= 4 && probDestruction < 50) {
-        setProbDestruction(prev => prev+5);
-      }
-      setProbFail(100-probSuccess-probDestruction);
       setCountTry(prev => prev+1);
       setLevel(prev => prev+1);
-      console.log(`[성공] level:${level} countTry:${countTry} probSuccess:${probSuccess} probDestruct:${probDestruction} probFail:${probFail}`);
     }},
     //----------------------------------------
     { component :
@@ -94,11 +88,8 @@ const Enhance = () => {
     </div>,
     chance: probDestruction,
     action: ()=>{
+      setCountTry(prev => prev+1);
       setLevel(0);
-      if(countTry >= 4 && probDestruction < 50) {
-        setProbDestruction(prev => prev+5);
-      }
-      console.log(`[파괴] level:${level} countTry:${countTry} probSuccess:${probSuccess} probDestruct:${probDestruction} probFail:${probFail}`);
     }},
     //----------------------------------------
     { component :
@@ -108,11 +99,8 @@ const Enhance = () => {
     </div>,
     chance: probFail,
     action: () => {
+      setCountTry(prev => prev+1);
       setLevel(prev => prev-1);
-      if(countTry >= 4 && probDestruction < 50) {
-        setProbDestruction(prev => prev+5);
-      }
-      console.log(`[실패] level:${level} countTry:${countTry} probSuccess:${probSuccess} probDestruct:${probDestruction} probFail:${probFail}`);
     }},
   ];
 
@@ -135,6 +123,20 @@ const Enhance = () => {
       setResult(component);
     }
   }, [resultModalIsOpen]);
+
+  useEffect(() => {
+    setProbFail(100-probSuccess-probDestruction);
+  },[probSuccess, probDestruction]);
+
+  useEffect(() => {
+    console.log(`level:${level} countTry:${countTry} probSuccess:${probSuccess} probDestruct:${probDestruction} probFail:${probFail}`);
+  },[probFail]);
+
+  useEffect(() => {
+    if(countTry >= 4 && probDestruction < 50) {
+      setProbDestruction(prev => prev+5);
+    }
+  },[countTry]);
 
   return (
     <div className='Enhance'>
